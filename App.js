@@ -1,4 +1,4 @@
-import React from "react";
+import React , {useState} from "react";
 import { ImageBackground , Text , View , StyleSheet , Image ,TouchableOpacity} from "react-native";
 import Header from "./src/components/Header"
 import MainPage from "./src/pages/MainPage";
@@ -9,8 +9,12 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 const Tab = createBottomTabNavigator();
 
-const App = () => (
-    <ImageBackground style={{height:"100%",width:"100%",backgroundColor:"#F5F5F5"}}>
+function App (props) {
+
+    const [modal,setModal ] = useState(false);
+
+    return (
+        <ImageBackground style={{height:"100%",width:"100%",backgroundColor:"#F5F5F5"}}>
         <Header source={require('./assets/icons/settings.png')}/>
             <NavigationContainer>
                 <Tab.Navigator screenOptions={{tabBarStyle:[styles.floatingTab,styles.shadow],tabBarShowLabel:false}}>
@@ -24,7 +28,8 @@ const App = () => (
                 </Tab.Navigator>          
             </NavigationContainer>
     </ImageBackground>
-);
+    );
+} 
 
 const styles = StyleSheet.create({
     floatingTab:{
@@ -51,7 +56,7 @@ const styles = StyleSheet.create({
 })
 
 const AddButon = ({children,onPress}) => (
-    <TouchableOpacity style={{top:-30,justifyContent:"center",alignItems:"center"}} onPress={onPress}>
+    <TouchableOpacity style={{top:-30,justifyContent:"center",alignItems:"center"}} onPress={/*() =>  {setModal(true)}*/onPress}>
         <View style={[{width:70,height:70,borderRadius:35,backgroundColor:"#e32f45"},styles.shadow]}>
             {children}
         </View>
