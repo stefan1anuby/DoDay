@@ -40,9 +40,7 @@ function PostPage (props) {
 	}
 
 	return (
-		modal && (
-		<Modal>
-			<View style={styles.mainContainer}>
+				<View style={styles.mainContainer}>
 					<TouchableOpacity style={{ backgroundColor:"yellow",width:80 }} onPress={() => {props.navigation.navigate("Home");setModal(false);console.log("am incercat sa es")}}>
 						<Text>Close</Text>
 					</TouchableOpacity>
@@ -79,12 +77,10 @@ function PostPage (props) {
 					{
 						show && (
 							<DateTimePicker testID="dateTimePicker" value={date} mode={mode} is24Hour={true} display='default' onChange={onChange}/>
-						)
-					}
+							)
+						}
 
 			</View>
-		</Modal>
-		)
 	)
 }
 

@@ -1,32 +1,42 @@
 import React , {useState} from "react";
-import { ImageBackground , Text , View , StyleSheet , Image ,TouchableOpacity} from "react-native";
+import { ImageBackground , Text , View , StyleSheet , Image ,TouchableOpacity , Button} from "react-native";
 import Header from "./src/components/Header"
 import MainPage from "./src/pages/MainPage";
 import SecondPage from "./src/pages/SecondPage";
 import PostPage from "./src/pages/PostPage";
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createStackNavigator } from '@react-navigation/stack';
+
+
 
 const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
 
 function App (props) {
 
     const [modal,setModal ] = useState(false);
-
+    /// TODO: https://reactnavigation.org/docs/hiding-tabbar-in-screens/
+    /// si de sters chestii cu navigator de pe PostPage
     return (
         <ImageBackground style={{height:"100%",width:"100%",backgroundColor:"#F5F5F5"}}>
-        <Header source={require('./assets/icons/settings.png')}/>
-            <NavigationContainer>
-                <Tab.Navigator screenOptions={{tabBarStyle:[styles.floatingTab,styles.shadow],tabBarShowLabel:false}}>
-                    <Tab.Screen name="Home" component={MainPage} options={{ headerShown: false ,tabBarIcon: ({focused}) => 
-                        <Image source={require("./assets/icons/checklist.png")} style={[styles.tabIcon,{tintColor: focused ? "#ffffff" : "#000000"}]} /> }} />
-                    <Tab.Screen name="Post" component={PostPage} options={{headerShown: false,
-                    tabBarIcon: ({focused}) => (<Image source={require('./assets/icons/plus.png')} style={{width:30,height:30,tintColor:"#fff"}}/>),
-                    tabBarButton: (props) => <AddButon {...props}/>}}/>
-                    <Tab.Screen name="Settings" component={SecondPage} options={{ headerShown: false ,tabBarIcon: ({focused}) =>
-                 <Image source={require("./assets/icons/profile-user.png")} style={[styles.tabIcon,{tintColor: focused ? "#ffffff" : "#000000"}]} /> }} />
-                </Tab.Navigator>          
-            </NavigationContainer>
+                <NavigationContainer>
+                    <Stack.Navigator>
+                        <Stack.Screen name="HomeTabs" options={{headerShown:false}} component={({navigation}) => (
+
+                            <Tab.Navigator screenOptions={{tabBarStyle:[styles.floatingTab,styles.shadow],tabBarShowLabel:false}}>
+                            <Tab.Screen name="Home" component={MainPage} options={{tabBarIcon: ({focused}) => 
+                                <Image source={require("./assets/icons/checklist.png")} style={[styles.tabIcon,{tintColor: focused ? "#ffffff" : "#000000"}]} /> }} />
+                            <Tab.Screen name="Post" component={() => {}} options={{headerShown: false,
+                            tabBarIcon: ({focused}) => (<Image source={require('./assets/icons/plus.png')} style={{width:30,height:30,tintColor:"#fff"}}/>),
+                            tabBarButton: (props) => <AddButon {...props} navigation={navigation}/>}}/>
+                            <Tab.Screen name="Settings" component={SecondPage} options={{tabBarIcon: ({focused}) =>
+                        <Image source={require("./assets/icons/profile-user.png")} style={[styles.tabIcon,{tintColor: focused ? "#ffffff" : "#000000"}]} /> }} />
+                        </Tab.Navigator>          
+                        )}/>
+                        <Stack.Screen name="PostScreen" component={PostPage}/>
+                    </Stack.Navigator>
+                </NavigationContainer>
     </ImageBackground>
     );
 } 
@@ -55,12 +65,21 @@ const styles = StyleSheet.create({
     }
 })
 
-const AddButon = ({children,onPress}) => (
-    <TouchableOpacity style={{top:-30,justifyContent:"center",alignItems:"center"}} onPress={/*() =>  {setModal(true)}*/onPress}>
+const AddButon = ({children,onPress,navigation}) => (
+    <TouchableOpacity style={{top:-30,justifyContent:"center",alignItems:"center"}} onPress={ () =>  navigation.navigate("PostScreen") }>
         <View style={[{width:70,height:70,borderRadius:35,backgroundColor:"#e32f45"},styles.shadow]}>
             {children}
         </View>
     </TouchableOpacity>
 )
 
+function PostPageScreen(props) {
+
+    return (
+        <Stack.Navigator>
+            <Stack.Screen name="PostPageSCreen" children={(props) => <PostPage {...props}/>}/>
+        </Stack.Navigator>
+    )
+
+}
 export default App;
