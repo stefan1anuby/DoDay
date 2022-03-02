@@ -3,35 +3,40 @@ import {StyleSheet,View,Text,TextInput,Switch,TouchableOpacity,Button,Modal} fro
 import Tags from "react-native-tags";
 import DateTimePicker from '@react-native-community/datetimepicker'
 
+function isValidInput(input){
+	if(input.name.length < 3 ) {alert("The task name is too short") ; return false;}
+	return true;
+}
+
 function PostPage (props) {
 
-	console.log(props)
+	//console.log(props)
 
 	const [name, onChangeName] = useState("")
 	const [date,setDate] = useState(new Date())
 	const [mode,setMode] = useState('date')
 	const [show,setShow] = useState(false)
 	const [text,setText] = useState({date:"",startingTime:"",endingTime:""})
-
-	const [modal,setModal] = useState(true)
-
 	const [isEnabled, setIsEnabled] = useState(false);
   	const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+	const [tags,setTags] = useState([]);
 
 	const onChange = (event , selectedDate) => {
+		
 		const currentDate = selectedDate || date;
 		setShow(Platform.OS === 'ios');
-		setDate(currentDate);
-
-		let tempDate = new Date(currentDate);
-
-		/// if mode
-		let fDate = tempDate.getDate() + '/' + (tempDate.getMonth() + 1) + '/' + tempDate.getFullYear();
-		let fTime = tempDate.getHours() + ':' + tempDate.getMinutes();
-
-		console.log(fDate ,fTime)
-
-		setText( (previousState) => (mode === "date" ? { date : fDate , startingTime : previousState.startingTime } : { date : previousState.date , startingTime : fTime} ) )
+		if(event.type == "set"){
+			setDate(currentDate);
+			
+			let tempDate = new Date(currentDate);
+			
+			let fDate = tempDate.getDate() + '/' + (tempDate.getMonth() + 1) + '/' + tempDate.getFullYear();
+			let fTime = tempDate.getHours() + ':' + tempDate.getMinutes();
+			
+			//console.log(fDate ,fTime)
+			
+			setText( (previousState) => (mode === "date" ? { date : fDate , startingTime : previousState.startingTime } : { date : previousState.date , startingTime : fTime} ) )
+		}
 	}
 
 	const showMode = (currentMode) => {
@@ -39,11 +44,28 @@ function PostPage (props) {
 		setMode(currentMode);
 	}
 
+	const sendTask = () => {
+		let post = {
+			"id": Date(),
+			"name" : name,
+			"time": text,
+			"remindMe": isEnabled,
+			"tags": tags
+		}
+		if(isValidInput(post)) {
+			console.log("postarea a fost ok")
+			props.navigation.goBack();
+		}
+		else{
+			console.log("postarea nu a mers")
+		}
+		console.log(post);
+
+	}
+
 	return (
+
 				<View style={styles.mainContainer}>
-					<TouchableOpacity style={{ backgroundColor:"yellow",width:80 }} onPress={() => {props.navigation.navigate("Home");setModal(false);console.log("am incercat sa es")}}>
-						<Text>Close</Text>
-					</TouchableOpacity>
 					<Text>Name</Text>
 					<TextInput style={styles.input} onChangeText={onChangeName} value={name} placeholder="Task Name" placeholderTextColor="#000" />
 					<Text>Date</Text>
@@ -70,15 +92,15 @@ function PostPage (props) {
 					</View>
 
 					<Text>Category</Text>
-					<MyTagInput/>
+					<MyTagInput onChangeTags={(tags) => setTags(tags)}/>
 					
-
-					< Button title = "Create Task" color = "#841584" borderRadius={30} />
+					< Button title = "Create Task" color = "#841584" borderRadius={30} onPress={sendTask} />
 					{
+						
 						show && (
 							<DateTimePicker testID="dateTimePicker" value={date} mode={mode} is24Hour={true} display='default' onChange={onChange}/>
 							)
-						}
+					}
 
 			</View>
 	)
@@ -100,14 +122,16 @@ const styles = StyleSheet.create({
 	}
 })
 
-const MyTagInput = () => (
+const MyTagInput = (prop) => (
 	<Tags
 	  initialText="Add Tag"
 	  textInputProps={{
 		placeholder: "Any type of animal"
 	  }}
 	  initialTags={["dog", "cat", "chicken","rat","bou","bos","prooost","pooorc"]}
-	  onChangeTags={tags => console.log(tags)}
+	  onChangeTags={prop.onChangeTags}
+	  //onChangeTags={tags => console.log(tags)}
+
 	 /* 
 	  onTagPress={(index, tagLabel, event, deleted) =>
 		console.log(index, tagLabel, event, deleted ? "deleted" : "not deleted")
