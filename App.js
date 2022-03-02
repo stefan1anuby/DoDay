@@ -8,14 +8,11 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 
-
-
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 function App (props) {
 
-    const [modal,setModal ] = useState(false);
     return (
         <ImageBackground style={{height:"100%",width:"100%",backgroundColor:"#F5F5F5"}}>
                 <NavigationContainer>

@@ -30,8 +30,9 @@ function PostPage (props) {
 			
 			let tempDate = new Date(currentDate);
 			
-			let fDate = tempDate.getDate() + '/' + (tempDate.getMonth() + 1) + '/' + tempDate.getFullYear();
+			//let fDate = tempDate.getDate() + '/' + (tempDate.getMonth() + 1) + '/' + tempDate.getFullYear();
 			let fTime = tempDate.getHours() + ':' + tempDate.getMinutes();
+			let fDate = tempDate.toDateString()
 			
 			//console.log(fDate ,fTime)
 			
